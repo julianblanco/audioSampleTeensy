@@ -23,10 +23,10 @@
 #endif
 
 // Number of channels to capture
-#define CHANNEL_COUNT 4
+#define CHANNEL_COUNT 1
 
 // Filename format string
-#define FILENAME_FORMAT "ddata%d.csv"
+#define FILENAME_FORMAT "rawdata%d.data"
 // Maximum file name length. This allows for up to 999999
 // data files with the default filename format above
 #define FILENAME_LENGTH 16
@@ -75,7 +75,7 @@
 #endif
 
 // Length of the recording to create in minutes
-#define RECORDING_LENGTH 1
+#define RECORDING_LENGTH 60
 // Or, define the sample count
 // #define SAMPLE_COUNT 10000
 
@@ -102,7 +102,7 @@
 // flashing, you can decrease this number. If you notice you
 // have a lot of free space, you can increase in order to
 // decrease the likelihood of a circular buffer overrun.
-#define BLOCK_BUFFER_COUNT (CEILING(int(EXPECTED_BLOCK_COUNT), 32))
+#define BLOCK_BUFFER_COUNT 800// (CEILING(int(EXPECTED_BLOCK_COUNT), 64))
 
 // The number of samples in a block
 #define BLOCK_SAMPLE_COUNT (SD_BUFFER_SIZE / SAMPLE_SIZE)
@@ -139,7 +139,7 @@ unsigned int g_write_count;
 bool g_overrun_flag = false;
 // The interval timer to fire ISRs for sampling at the requested
 // frequency.
-int filesizemax = 10000;
+int filesizemax = 5000;
 char filename[FILENAME_LENGTH];
 int data_file_idx = -1;
 int format_result;
@@ -200,17 +200,22 @@ void setup()
       }
       else
       {
+        if (!g_sd_controller.mkdir(foldername))
+        {
+          debug_log("Create Folder failed");
+        }
         Serial.print("Folder Created ");
         Serial.println(foldername);
         break;
       }
-      if (!g_sd_controller.chdir(foldername))
+
+      data_file_idx += 1;
+    }
+          if (!g_sd_controller.chdir(foldername))
       {
         debug_log("Could not cd to folder");
         PANIC();
       }
-      data_file_idx += 1;
-    }
     format_result = snprintf(filename, FILENAME_LENGTH, FILENAME_FORMAT, data_file_idx);
 
     // Check if we have run out of data files
@@ -261,7 +266,7 @@ void sample_all_channels()
   {
     // pSample[i] = g_adc_controller.read(g_adc_controller.getChannelMask(i));
     //pSample[i] = i;
-    pSample[i] = analogRead(21 + i);
+    pSample[0] = analogRead(21 );
   }
 
   // Increment the current sample
@@ -299,8 +304,10 @@ void loop()
     if (g_write_count % filesizemax == 0)
     {
       g_data_file.close();
+      debug_log(F("close file"));
       data_file_idx += 1;
       format_result = snprintf(filename, FILENAME_LENGTH, FILENAME_FORMAT, data_file_idx);
+      debug_log(F("open"));
       g_data_file.open(filename, FILE_WRITE);
       if (!g_data_file)
       {
