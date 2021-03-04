@@ -22,6 +22,9 @@
 #define debug_delay(n)
 #endif
 
+// Start on powerup or wait for trigger
+#define halleffectsensor 1
+
 // Number of channels to capture
 #define CHANNEL_COUNT 1
 
@@ -34,6 +37,7 @@
 // Which LED to flash for debugging
 #define DEBUG_LED LED_BUILTIN
 
+#define HALL_EFFECT_PIN 8
 // Find the ceiling of a constant integer division at compile time
 #define CEILING(x, y) (((x) + (y)-1) / (y))
 
@@ -160,6 +164,11 @@ void setup()
   // Initialzie LED output
   pinMode(DEBUG_LED, OUTPUT);
 
+  if(halleffectsensor)
+  {
+    pinMode(HALL_EFFECT_PIN,INPUT);
+  }
+
   // Write some data to the debugging interface
   debug_init();
   debug_log("datalogger initializing with:");
@@ -245,6 +254,27 @@ void setup()
   g_current_block = 0;
   g_current_sample = 0;
   g_write_count = 0;
+
+
+
+  // if hall effect sensor in play, loop until magnet is brought close, then beep!
+  if(halleffectsensor)
+  {
+    int sensorValue = 1023;
+    while(1)
+    {
+      sensorValue = analogRead(HALL_EFFECT_PIN);
+      if (sensorValue < 600)
+      {
+        break;
+      }
+      else
+      {
+        delay(500);
+      }
+    }
+
+  }
 
   // Start our ISR
   debug_log("starting sampling timer");
