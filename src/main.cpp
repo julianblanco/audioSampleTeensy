@@ -37,7 +37,7 @@
 // Which LED to flash for debugging
 #define DEBUG_LED LED_BUILTIN
 
-#define HALL_EFFECT_PIN 8
+#define HALL_EFFECT_PIN A9
 // Find the ceiling of a constant integer division at compile time
 #define CEILING(x, y) (((x) + (y)-1) / (y))
 
