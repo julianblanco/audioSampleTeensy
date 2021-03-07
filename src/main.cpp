@@ -79,7 +79,7 @@
 #endif
 
 // Length of the recording to create in minutes
-#define RECORDING_LENGTH 60
+#define RECORDING_LENGTH 2
 // Or, define the sample count
 // #define SAMPLE_COUNT 10000
 
@@ -261,15 +261,20 @@ void setup()
   if(halleffectsensor)
   {
     int sensorValue = 1023;
+    debug_write(F("Waiting for start magnet: "));
     while(1)
     {
+      
       sensorValue = analogRead(HALL_EFFECT_PIN);
       if (sensorValue < 600)
       {
+        digitalWrite(DEBUG_LED,LOW);
+        
         break;
       }
       else
       {
+       
         delay(500);
       }
     }
