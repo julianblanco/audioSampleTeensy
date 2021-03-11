@@ -24,7 +24,7 @@
 
 // Start on powerup or wait for trigger
 #define halleffectsensor 1
-
+#define BUZZER 1
 // Number of channels to capture
 #define CHANNEL_COUNT 1
 
@@ -38,6 +38,7 @@
 #define DEBUG_LED LED_BUILTIN
 
 #define HALL_EFFECT_PIN A9
+#define BUZZER_PIN 32
 // Find the ceiling of a constant integer division at compile time
 #define CEILING(x, y) (((x) + (y)-1) / (y))
 
@@ -168,6 +169,11 @@ void setup()
   {
     pinMode(HALL_EFFECT_PIN,INPUT);
   }
+  if(BUZZER)
+  {
+    pinMode(BUZZER_PIN,OUTPUT);
+    digitalWrite(BUZZER_PIN,LOW);
+  }
 
   // Write some data to the debugging interface
   debug_init();
@@ -269,7 +275,20 @@ void setup()
       if (sensorValue < 600)
       {
         digitalWrite(DEBUG_LED,LOW);
-        
+        if(BUZZER)
+        {
+            for( int idx =0;idx<500;idx++)
+          {
+          digitalWrite(BUZZER_PIN,HIGH);
+          delay(50);
+          digitalWrite(BUZZER_PIN,LOW);
+          delay(50);
+          }
+          digitalWrite(BUZZER_PIN,HIGH);
+          delay(1000);
+          digitalWrite(BUZZER_PIN,LOW);
+          delay(50);
+      }
         break;
       }
       else
