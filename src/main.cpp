@@ -281,13 +281,10 @@ void setup()
         digitalWrite(DEBUG_LED,LOW);
         if(BUZZER)
         {
-            for( int idx =0;idx<500;idx++)
-          {
           digitalWrite(BUZZER_PIN,HIGH);
-          delay(50);
+          delay(1000);
           digitalWrite(BUZZER_PIN,LOW);
-          delay(50);
-          }
+          delay(1000);
           digitalWrite(BUZZER_PIN,HIGH);
           delay(1000);
           digitalWrite(BUZZER_PIN,LOW);
