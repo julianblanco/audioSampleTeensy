@@ -172,7 +172,11 @@ void setup()
   if(BUZZER)
   {
     pinMode(BUZZER_PIN,OUTPUT);
+    delay(1000);
+    digitalWrite(BUZZER_PIN,HIGH);
+    delay(1000);
     digitalWrite(BUZZER_PIN,LOW);
+    
   }
 
   // Write some data to the debugging interface
