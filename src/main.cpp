@@ -297,7 +297,7 @@ void setup()
       }
       else
       {
-       
+        if(BUZZER)digitalWrite(BUZZER_PIN,LOW);
         delay(500);
       }
     }
@@ -349,6 +349,7 @@ void sample_all_channels()
 // Wait for a ready block, and flush it to the SD card
 void loop()
 {
+
   block_t *pBlock;
 
   if (g_overrun_flag)
